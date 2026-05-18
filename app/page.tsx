@@ -25,7 +25,7 @@ export default async function HomePage() {
   <div className="min-h-screen flex flex-col bg-background]">
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative overflow-hidden h-[250px] md:h-[360px] lg:h-[66vh] bg-secondary">
+        <section className="relative overflow-hidden min-h-[450px] md:min-h-[500px] lg:h-[66vh] bg-secondary py-12 lg:py-0">
 
           <div className="container mx-auto px-4 h-full">
             <div className="h-full flex flex-col lg:flex-row items-center lg:items-stretch">
