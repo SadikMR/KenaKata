@@ -3,18 +3,17 @@
 import { useState, useMemo } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Minus, Plus, Trash2, ShoppingBag, Lock } from 'lucide-react'
+import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Separator } from '@/components/ui/separator'
 import { useCart } from '@/lib/cart-context'
-import { useAuth } from '@/lib/auth-context'
 import { useRouter } from 'next/navigation'
+import { ProtectedRoute } from '@/components/common/protected-route'
 
-export default function CartPage() {
+function CartContent() {
     const { items, updateQuantity, removeItem, isLoading } = useCart()
-    const { user, isLoading: authLoading } = useAuth()
     const router = useRouter()
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set(items.map((i) => i.product.id)))
 
@@ -47,37 +46,8 @@ export default function CartPage() {
     const shipping = 0 // Free shipping
     const total = selectedSubtotal + shipping
 
-    // Show login prompt if not authenticated
-    if (!authLoading && !user) {
-        return (
-            <div className="min-h-screen flex flex-col">
-                <main className="flex-1 flex items-center justify-center">
-                    <div className="text-center px-4 py-16">
-                        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-secondary mb-6">
-                            <Lock className="h-10 w-10 text-muted-foreground" />
-                        </div>
-                        <h1 className="text-2xl font-bold mb-2">Login Required</h1>
-                        <p className="text-muted-foreground mb-6">
-                            You need to be logged in to access your cart and make purchases.
-                        </p>
-                        <div className="flex gap-4 justify-center">
-                            <Link href="/login">
-                                <Button size="lg">Login</Button>
-                            </Link>
-                            <Link href="/register">
-                                <Button size="lg" variant="outline">
-                                    Register
-                                </Button>
-                            </Link>
-                        </div>
-                    </div>
-                </main>
-            </div>
-        )
-    }
-
     // Show loading state
-    if (isLoading || authLoading) {
+    if (isLoading) {
         return (
             <div className="min-h-screen flex flex-col">
                 <main className="flex-1 flex items-center justify-center">
@@ -258,5 +228,13 @@ export default function CartPage() {
                 </div>
             </main>
         </div>
+    )
+}
+
+export default function CartPage() {
+    return (
+        <ProtectedRoute>
+            <CartContent />
+        </ProtectedRoute>
     )
 }
