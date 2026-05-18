@@ -18,3 +18,15 @@ export {
   ActiveFilters,
 } from "./filters"
 export type { FilterContentProps } from "./filters"
+
+// Detail page components (re-exported from detail/ subfolder)
+export {
+  BackButton,
+  QuantitySelector,
+  ProductInfo,
+  ProductInfoSkeleton,
+  ProductGallery,
+  ProductGallerySkeleton,
+  RelatedProducts,
+  RelatedProductsSkeleton,
+} from "./detail"
