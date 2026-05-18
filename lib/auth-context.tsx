@@ -7,7 +7,7 @@ interface AuthContextType {
   user: User | null
   tokens: AuthTokens | null
   login: (email: string, password: string) => Promise<boolean>
-  register: (name: string, email: string, password: string) => Promise<boolean>
+  register: (name: string, email: string, password: string, avatar?: string) => Promise<boolean>
   logout: () => void
   isLoading: boolean
   updateProfile: (data: Partial<User>) => void
@@ -105,10 +105,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const register = useCallback(async (name: string, email: string, password: string): Promise<boolean> => {
+  const register = useCallback(async (name: string, email: string, password: string, avatar?: string): Promise<boolean> => {
     try {
       // Create user via API
-      const newUser = await createUser({ name, email, password })
+      const newUser = await createUser({ name, email, password, avatar })
 
       if (!newUser) {
         return false

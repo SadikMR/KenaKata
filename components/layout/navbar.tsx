@@ -7,6 +7,14 @@ import { useState } from "react"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { useAuth } from "@/lib/auth-context"
 
 export function Navbar() {
   const router = useRouter()
@@ -14,6 +22,7 @@ export function Navbar() {
   const [searchQuery, setSearchQuery] = useState("")
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
+  const { user, logout } = useAuth()
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -66,11 +75,32 @@ export function Navbar() {
               </Button>
             </Link>
 
-            <Link href="/login">
-              <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
-              </Button>
-            </Link>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user.avatar} alt={user.name} />
+                      <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                        {user.name.split(" ").map(n => n[0]).join("")}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile">Profile</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link href="/login">
+                <Button variant="ghost" size="icon">
+                  <User className="h-5 w-5" />
+                </Button>
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -118,15 +148,38 @@ export function Navbar() {
               >
                 <span>Cart</span>
               </Link>
-              <Link
-                href="/login"
-                className={`px-3 py-2 text-sm font-medium rounded-md ${
-                  pathname === "/login" ? "bg-secondary" : "hover:bg-secondary"
-                }`}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Login
-              </Link>
+              {user ? (
+                <>
+                  <Link
+                    href="/profile"
+                    className={`px-3 py-2 text-sm font-medium rounded-md ${
+                      pathname === "/profile" ? "bg-secondary" : "hover:bg-secondary"
+                    }`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Profile
+                  </Link>
+                  <button
+                    className="px-3 py-2 text-sm font-medium text-left rounded-md hover:bg-secondary"
+                    onClick={() => {
+                      logout()
+                      setIsMenuOpen(false)
+                    }}
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/login"
+                  className={`px-3 py-2 text-sm font-medium rounded-md ${
+                    pathname === "/login" ? "bg-secondary" : "hover:bg-secondary"
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Login
+                </Link>
+              )}
               <button
                 className="flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md hover:bg-secondary"
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}

@@ -21,6 +21,7 @@ export function RegisterForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [avatar, setAvatar] = useState("")
   const [errors, setErrors] = useState<FormErrors>({})
   const [isLoading, setIsLoading] = useState(false)
 
@@ -60,7 +61,7 @@ export function RegisterForm() {
 
     setIsLoading(true)
 
-    const success = await register(name, email, password)
+    const success = await register(name, email, password, avatar || undefined)
 
     if (success) {
       router.push("/")
@@ -127,6 +128,14 @@ export function RegisterForm() {
           }}
           error={errors.confirmPassword}
           isPassword
+        />
+
+        <FormField
+          id="avatar"
+          label="Avatar URL (optional)"
+          placeholder="https://example.com/avatar.jpg"
+          value={avatar}
+          onChange={setAvatar}
         />
 
         <Button type="submit" className="w-full" disabled={isLoading}>
