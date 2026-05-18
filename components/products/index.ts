@@ -25,4 +25,6 @@ export {
   QuantitySelector,
   ProductInfo,
   ProductInfoSkeleton,
+  ProductGallery,
+  ProductGallerySkeleton,
 } from "./detail"
