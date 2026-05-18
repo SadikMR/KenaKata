@@ -3,66 +3,63 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { Eye, EyeOff } from "lucide-react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 import { useAuth } from "@/lib/auth-context"
-import { FormField } from "./form-field"
 import { AvatarUpload } from "./avatar-upload"
 
-interface FormErrors {
-  name?: string
-  email?: string
-  password?: string
-  confirmPassword?: string
-}
+const registerSchema = z
+  .object({
+    name: z.string().min(1, "Full name is required"),
+    email: z.string().min(1, "Email is required").email("Please enter a valid email"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
+    avatar: z.string().optional(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  })
 
 export function RegisterForm() {
   const router = useRouter()
   const { register } = useAuth()
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [avatar, setAvatar] = useState("")
-  const [errors, setErrors] = useState<FormErrors>({})
   const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {}
+  const form = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      avatar: "",
+    },
+  })
 
-    if (!name.trim()) {
-      newErrors.name = "Full name is required"
-    }
-
-    if (!email.trim()) {
-      newErrors.email = "Email is required"
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = "Please enter a valid email"
-    }
-
-    if (!password) {
-      newErrors.password = "Password is required"
-    } else if (password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters"
-    }
-
-    if (!confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password"
-    } else if (password !== confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match"
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!validateForm()) return
-
+  const onSubmit = async (values: z.infer<typeof registerSchema>) => {
     setIsLoading(true)
 
-    const success = await register(name, email, password, avatar || undefined)
+    const success = await register(
+      values.name,
+      values.email,
+      values.password,
+      values.avatar || undefined
+    )
 
     if (success) {
       router.push("/")
@@ -71,72 +68,125 @@ export function RegisterForm() {
     setIsLoading(false)
   }
 
-  const clearError = (field: keyof FormErrors) => {
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: undefined }))
-    }
-  }
-
   return (
     <>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <AvatarUpload avatarUrl={avatar} onAvatarChange={setAvatar} />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="avatar"
+            render={({ field }) => (
+              <FormItem className="flex justify-center mb-4">
+                <FormControl>
+                  <AvatarUpload
+                    avatarUrl={field.value || ""}
+                    onAvatarChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          id="name"
-          label="Full Name"
-          placeholder="John Doe"
-          value={name}
-          onChange={(val) => {
-            setName(val)
-            clearError("name")
-          }}
-          error={errors.name}
-        />
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Full Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="John Doe" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          id="email"
-          label="Email"
-          type="email"
-          placeholder="you@example.com"
-          value={email}
-          onChange={(val) => {
-            setEmail(val)
-            clearError("email")
-          }}
-          error={errors.email}
-        />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input type="email" placeholder="you@example.com" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          id="password"
-          label="Password"
-          placeholder="Create a password"
-          value={password}
-          onChange={(val) => {
-            setPassword(val)
-            clearError("password")
-          }}
-          error={errors.password}
-          isPassword
-        />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Create a password"
+                      {...field}
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4 text-muted-foreground" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-muted-foreground" />
+                      )}
+                    </Button>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          id="confirmPassword"
-          label="Confirm Password"
-          placeholder="Confirm your password"
-          value={confirmPassword}
-          onChange={(val) => {
-            setConfirmPassword(val)
-            clearError("confirmPassword")
-          }}
-          error={errors.confirmPassword}
-          isPassword
-        />
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm Password</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <Input
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="Confirm your password"
+                      {...field}
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className="h-4 w-4 text-muted-foreground" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-muted-foreground" />
+                      )}
+                    </Button>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? "Creating account..." : "Create Account"}
-        </Button>
-      </form>
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? "Creating account..." : "Create Account"}
+          </Button>
+        </form>
+      </Form>
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
         Already have an account?{" "}

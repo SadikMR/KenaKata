@@ -14,25 +14,27 @@ import {
   ProductListSkeleton,
 } from "@/components/products"
 import { getProducts, getCategories, type Product, type Category } from "@/lib/api"
+import { useDebounce } from "@/lib/hooks"
 
 const ITEMS_PER_PAGE = 12
 
 function ProductListingContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  
+
   // Get initial values from URL
   const initialCategory = searchParams.get("category") || ""
   const initialSearch = searchParams.get("search") || ""
   const initialPage = parseInt(searchParams.get("page") || "1")
-  
+
   const [searchQuery, setSearchQuery] = useState(initialSearch)
+  const debouncedSearchQuery = useDebounce(searchQuery, 500)
   const [selectedCategory, setSelectedCategory] = useState(initialCategory)
   const [sortBy, setSortBy] = useState("newest")
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [currentPage, setCurrentPage] = useState(initialPage)
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000])
-  
+
   // Data states
   const [products, setProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<Category[]>([])
@@ -61,27 +63,27 @@ function ProductListingContent() {
     setIsLoading(true)
     try {
       const offset = (currentPage - 1) * ITEMS_PER_PAGE
-      
+
       const filters: Parameters<typeof getProducts>[0] = {
         offset,
         limit: ITEMS_PER_PAGE,
       }
-      
-      if (searchQuery) {
-        filters.title = searchQuery
+
+      if (debouncedSearchQuery) {
+        filters.title = debouncedSearchQuery
       }
-      
+
       if (selectedCategory) {
         filters.categoryId = parseInt(selectedCategory)
       }
-      
+
       if (priceRange[0] > 0 || priceRange[1] < 1000) {
         filters.price_min = priceRange[0]
         filters.price_max = priceRange[1]
       }
-      
+
       const data = await getProducts(filters)
-      
+
       // Client-side sorting since API doesn't support it
       let sortedData = [...data]
       switch (sortBy) {
@@ -95,9 +97,9 @@ function ProductListingContent() {
         default:
           break
       }
-      
+
       setProducts(sortedData)
-      
+
       // Estimate total - if we got full page, there might be more
       if (data.length === ITEMS_PER_PAGE) {
         setTotalProducts((currentPage) * ITEMS_PER_PAGE + ITEMS_PER_PAGE)
@@ -110,7 +112,7 @@ function ProductListingContent() {
     } finally {
       setIsLoading(false)
     }
-  }, [currentPage, searchQuery, selectedCategory, priceRange, sortBy])
+  }, [currentPage, debouncedSearchQuery, selectedCategory, priceRange, sortBy])
 
   useEffect(() => {
     fetchProducts()
@@ -120,12 +122,12 @@ function ProductListingContent() {
   useEffect(() => {
     const params = new URLSearchParams()
     if (selectedCategory) params.set("category", selectedCategory)
-    if (searchQuery) params.set("search", searchQuery)
+    if (debouncedSearchQuery) params.set("search", debouncedSearchQuery)
     if (currentPage > 1) params.set("page", currentPage.toString())
-    
+
     const newUrl = params.toString() ? `?${params.toString()}` : "/products"
     router.replace(newUrl, { scroll: false })
-  }, [selectedCategory, searchQuery, currentPage, router])
+  }, [selectedCategory, debouncedSearchQuery, currentPage, router])
 
   const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE)
 

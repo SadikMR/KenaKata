@@ -1,27 +1,58 @@
 import { CreditCard, Smartphone, Wallet } from "lucide-react"
-
-export interface CheckoutFormData {
-  firstName: string
-  lastName: string
-  email: string
-  phone: string
-  address: string
-  city: string
-  zip: string
-  country: string
-  cardNumber: string
-  expiry: string
-  cvv: string
-  mobileNumber: string
-  transactionId: string
-}
-
-export interface FormErrors {
-  [key: string]: string
-}
+import * as z from "zod"
 
 export type PaymentMethod = "card" | "bkash" | "nagad" | "rocket"
 export type PaymentStep = "idle" | "validating" | "processing" | "confirming" | "success"
+
+export const checkoutSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z.string().min(1, "Email is required").email("Please enter a valid email"),
+  phone: z.string().min(1, "Phone number is required"),
+  address: z.string().min(1, "Address is required"),
+  city: z.string().min(1, "City is required"),
+  zip: z.string().min(1, "ZIP/Postal code is required"),
+  country: z.string().min(1, "Country is required"),
+  paymentMethod: z.enum(["card", "bkash", "nagad", "rocket"]),
+  
+  cardNumber: z.string().optional(),
+  expiry: z.string().optional(),
+  cvv: z.string().optional(),
+  
+  mobileNumber: z.string().optional(),
+  transactionId: z.string().optional(),
+}).superRefine((data, ctx) => {
+  if (data.paymentMethod === "card") {
+    if (!data.cardNumber?.trim()) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Card number is required", path: ["cardNumber"] })
+    } else if (data.cardNumber.replace(/\s/g, "").length < 16) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Please enter a valid card number", path: ["cardNumber"] })
+    }
+    if (!data.expiry?.trim()) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Expiry date is required", path: ["expiry"] })
+    } else if (!/^\d{2}\/\d{2}$/.test(data.expiry)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Use MM/YY format", path: ["expiry"] })
+    }
+    if (!data.cvv?.trim()) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "CVV is required", path: ["cvv"] })
+    } else if (data.cvv.length < 3) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "CVV must be 3-4 digits", path: ["cvv"] })
+    }
+  } else {
+    if (!data.mobileNumber?.trim()) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Mobile number is required", path: ["mobileNumber"] })
+    } else if (!/^01[3-9]\d{8}$/.test(data.mobileNumber.replace(/\s/g, ""))) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Enter a valid Bangladeshi mobile number", path: ["mobileNumber"] })
+    }
+    if (!data.transactionId?.trim()) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Transaction ID is required", path: ["transactionId"] })
+    } else if (data.transactionId.length < 8) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Enter a valid transaction ID", path: ["transactionId"] })
+    }
+  }
+})
+
+export type CheckoutFormData = z.infer<typeof checkoutSchema>
 
 export const PAYMENT_METHODS = [
   {
@@ -74,6 +105,7 @@ export const INITIAL_FORM_DATA: CheckoutFormData = {
   city: "",
   zip: "",
   country: "bd",
+  paymentMethod: "card",
   cardNumber: "",
   expiry: "",
   cvv: "",
@@ -82,7 +114,6 @@ export const INITIAL_FORM_DATA: CheckoutFormData = {
 }
 
 // --- Formatting helpers ---
-
 export function formatCardNumber(value: string) {
   const cleaned = value.replace(/\D/g, "").slice(0, 16)
   const groups = cleaned.match(/.{1,4}/g)
@@ -99,57 +130,4 @@ export function formatExpiry(value: string) {
 
 export function formatMobileNumber(value: string) {
   return value.replace(/\D/g, "").slice(0, 11)
-}
-
-// --- Validation ---
-
-export function validateCheckoutForm(
-  formData: CheckoutFormData,
-  paymentMethod: PaymentMethod
-): FormErrors {
-  const newErrors: FormErrors = {}
-
-  if (!formData.firstName.trim()) newErrors.firstName = "First name is required"
-  if (!formData.lastName.trim()) newErrors.lastName = "Last name is required"
-  if (!formData.email.trim()) {
-    newErrors.email = "Email is required"
-  } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-    newErrors.email = "Please enter a valid email"
-  }
-  if (!formData.phone.trim()) newErrors.phone = "Phone number is required"
-  if (!formData.address.trim()) newErrors.address = "Address is required"
-  if (!formData.city.trim()) newErrors.city = "City is required"
-  if (!formData.zip.trim()) newErrors.zip = "ZIP/Postal code is required"
-  if (!formData.country) newErrors.country = "Country is required"
-
-  if (paymentMethod === "card") {
-    if (!formData.cardNumber.trim()) {
-      newErrors.cardNumber = "Card number is required"
-    } else if (formData.cardNumber.replace(/\s/g, "").length < 16) {
-      newErrors.cardNumber = "Please enter a valid card number"
-    }
-    if (!formData.expiry.trim()) {
-      newErrors.expiry = "Expiry date is required"
-    } else if (!/^\d{2}\/\d{2}$/.test(formData.expiry)) {
-      newErrors.expiry = "Use MM/YY format"
-    }
-    if (!formData.cvv.trim()) {
-      newErrors.cvv = "CVV is required"
-    } else if (formData.cvv.length < 3) {
-      newErrors.cvv = "CVV must be 3-4 digits"
-    }
-  } else {
-    if (!formData.mobileNumber.trim()) {
-      newErrors.mobileNumber = "Mobile number is required"
-    } else if (!/^01[3-9]\d{8}$/.test(formData.mobileNumber.replace(/\s/g, ""))) {
-      newErrors.mobileNumber = "Enter a valid Bangladeshi mobile number"
-    }
-    if (!formData.transactionId.trim()) {
-      newErrors.transactionId = "Transaction ID is required"
-    } else if (formData.transactionId.length < 8) {
-      newErrors.transactionId = "Enter a valid transaction ID"
-    }
-  }
-
-  return newErrors
 }

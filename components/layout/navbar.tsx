@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { Search, ShoppingCart, User, Menu, X, Moon, Sun } from "lucide-react"
+import { ShoppingCart, User, Menu, X, Moon, Sun } from "lucide-react"
 import { useState } from "react"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
@@ -16,23 +16,15 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useAuth } from "@/lib/auth-context"
 import { useCart } from "@/lib/cart-context"
+import { NavbarSearch } from "@/components/products/navbar-search"
 
 export function Navbar() {
-  const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
   const { user, logout } = useAuth()
   const { totalItems } = useCart()
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (searchQuery.trim()) {
-      router.push(`/products?search=${encodeURIComponent(searchQuery)}`)
-      setSearchQuery("")
-    }
-  }
+  const router = useRouter()
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -44,20 +36,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Search */}
-          <div className="hidden flex-1 max-w-md md:block relative">
-            <form onSubmit={handleSearchSubmit}>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search products..."
-                  className="w-full pl-10 pr-10"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-            </form>
-          </div>
+          <NavbarSearch />
 
           {/* Desktop Actions */}
           <div className="hidden items-center gap-2 md:flex">
@@ -124,18 +103,6 @@ export function Navbar() {
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="border-t border-border py-4 md:hidden">
-            <form onSubmit={handleSearchSubmit} className="mb-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search products..."
-                  className="w-full pl-10 pr-10"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-            </form>
             <nav className="flex flex-col gap-2">
               <Link
                 href="/products"
