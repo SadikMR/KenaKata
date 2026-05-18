@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useAuth } from "@/lib/auth-context"
+import { useCart } from "@/lib/cart-context"
 
 export function Navbar() {
   const router = useRouter()
@@ -23,6 +24,7 @@ export function Navbar() {
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
   const { user, logout } = useAuth()
+  const { totalItems } = useCart()
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -72,6 +74,11 @@ export function Navbar() {
             <Link href="/cart">
               <Button variant="ghost" size="icon" className="relative">
                 <ShoppingCart className="h-5 w-5" />
+                {totalItems > 0 && (
+                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-xs text-accent-foreground">
+                    {totalItems}
+                  </span>
+                )}
               </Button>
             </Link>
 
@@ -147,6 +154,11 @@ export function Navbar() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 <span>Cart</span>
+                {totalItems > 0 && (
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-xs text-accent-foreground">
+                    {totalItems}
+                  </span>
+                )}
               </Link>
               {user ? (
                 <>
