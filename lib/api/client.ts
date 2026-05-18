@@ -13,9 +13,15 @@ if (!BASE_URL) {
 export const API_BASE_URL = BASE_URL;
 
 export function sanitizeImageUrl(url: string): string {
-  if (!url || url.includes("[") || url.includes('"')) {
-    return "https://placehold.co/600x400?text=No+Image"
+  if (
+    !url ||
+    url.includes('[') ||
+    url.includes('"') ||
+    url.includes('placeimg.com')
+  ) {
+    return '/images/place-holder.jpg'
   }
+
   return url
 }
 

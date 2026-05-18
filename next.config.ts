@@ -1,7 +1,30 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  /* config options here */
-};
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.imgur.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'placeimg.com',
+      },
+    ],
 
-export default nextConfig;
+    qualities: [70, 75],
+
+    dangerouslyAllowSVG: true,
+  },
+}
+
+export default nextConfig
