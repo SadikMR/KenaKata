@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { CheckCircle, Package, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { ProtectedRoute } from "@/components/common/protected-route"
 
 function OrderConfirmationContent() {
   const searchParams = useSearchParams()
@@ -77,18 +78,20 @@ function OrderConfirmationContent() {
 
 export default function OrderConfirmationPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex-1 flex items-center justify-center">
-          <div className="animate-pulse text-center">
-            <div className="h-20 w-20 bg-muted rounded-full mx-auto mb-4" />
-            <div className="h-8 w-48 bg-muted rounded mx-auto mb-2" />
-            <div className="h-4 w-64 bg-muted rounded mx-auto" />
+    <ProtectedRoute>
+      <Suspense
+        fallback={
+          <div className="flex-1 flex items-center justify-center">
+            <div className="animate-pulse text-center">
+              <div className="h-20 w-20 bg-muted rounded-full mx-auto mb-4" />
+              <div className="h-8 w-48 bg-muted rounded mx-auto mb-2" />
+              <div className="h-4 w-64 bg-muted rounded mx-auto" />
+            </div>
           </div>
-        </div>
-      }
-    >
-      <OrderConfirmationContent />
-    </Suspense>
+        }
+      >
+        <OrderConfirmationContent />
+      </Suspense>
+    </ProtectedRoute>
   )
 }
