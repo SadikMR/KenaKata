@@ -139,18 +139,16 @@ export function Navbar() {
             <nav className="flex flex-col gap-2">
               <Link
                 href="/products"
-                className={`px-3 py-2 text-sm font-medium rounded-md ${
-                  pathname === "/products" ? "bg-secondary" : "hover:bg-secondary"
-                }`}
+                className={`px-3 py-2 text-sm font-medium rounded-md ${pathname === "/products" ? "bg-secondary" : "hover:bg-secondary"
+                  }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 Products
               </Link>
               <Link
                 href="/cart"
-                className={`flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md ${
-                  pathname === "/cart" ? "bg-secondary" : "hover:bg-secondary"
-                }`}
+                className={`flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md ${pathname === "/cart" ? "bg-secondary" : "hover:bg-secondary"
+                  }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 <span>Cart</span>
@@ -164,9 +162,8 @@ export function Navbar() {
                 <>
                   <Link
                     href="/profile"
-                    className={`px-3 py-2 text-sm font-medium rounded-md ${
-                      pathname === "/profile" ? "bg-secondary" : "hover:bg-secondary"
-                    }`}
+                    className={`px-3 py-2 text-sm font-medium rounded-md ${pathname === "/profile" ? "bg-secondary" : "hover:bg-secondary"
+                      }`}
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Profile
@@ -184,9 +181,8 @@ export function Navbar() {
               ) : (
                 <Link
                   href="/login"
-                  className={`px-3 py-2 text-sm font-medium rounded-md ${
-                    pathname === "/login" ? "bg-secondary" : "hover:bg-secondary"
-                  }`}
+                  className={`px-3 py-2 text-sm font-medium rounded-md ${pathname === "/login" ? "bg-secondary" : "hover:bg-secondary"
+                    }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Login

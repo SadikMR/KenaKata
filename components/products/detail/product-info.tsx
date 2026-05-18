@@ -36,7 +36,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
 
     // Try to add item to cart
     const success = addItem(product, quantity)
-    
+
     if (success) {
       setAddedToCart(true)
       setError(null)
@@ -103,9 +103,8 @@ export function ProductInfo({ product }: ProductInfoProps) {
           onClick={() => setIsWishlisted(!isWishlisted)}
         >
           <Heart
-            className={`mr-2 h-5 w-5 ${
-              isWishlisted ? "fill-accent text-accent" : ""
-            }`}
+            className={`mr-2 h-5 w-5 ${isWishlisted ? "fill-accent text-accent" : ""
+              }`}
           />
           {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
         </Button>
