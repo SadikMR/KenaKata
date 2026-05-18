@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/auth-context"
 import { FormField } from "./form-field"
+import { AvatarUpload } from "./avatar-upload"
 
 interface FormErrors {
   name?: string
@@ -79,6 +80,8 @@ export function RegisterForm() {
   return (
     <>
       <form onSubmit={handleSubmit} className="space-y-4">
+        <AvatarUpload avatarUrl={avatar} onAvatarChange={setAvatar} />
+
         <FormField
           id="name"
           label="Full Name"
@@ -128,14 +131,6 @@ export function RegisterForm() {
           }}
           error={errors.confirmPassword}
           isPassword
-        />
-
-        <FormField
-          id="avatar"
-          label="Avatar URL (optional)"
-          placeholder="https://example.com/avatar.jpg"
-          value={avatar}
-          onChange={setAvatar}
         />
 
         <Button type="submit" className="w-full" disabled={isLoading}>
