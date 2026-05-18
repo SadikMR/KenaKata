@@ -140,7 +140,7 @@ export default async function HomePage() {
                       />
                     </div>
                     <CardContent className="p-4 text-center">
-                      <h3 className="font-semibold text-sm group-hover:text-accent-foreground transition-colors">
+                      <h3 className="font-semibold text-sm group-hover:text-foreground transition-colors">
                         {category.name}
                       </h3>
                     </CardContent>
