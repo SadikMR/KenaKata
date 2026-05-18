@@ -25,6 +25,11 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
 
+  // Scroll to top on navigation
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [productId])
+
   useEffect(() => {
     async function fetchProduct() {
       setIsLoading(true)
