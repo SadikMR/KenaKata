@@ -64,10 +64,10 @@ function OrderConfirmationContent() {
             </Button>
           </Link>
           <Link
-            href="/"
+            href="/profile"
             className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            Back to Home
+            View Order Details
           </Link>
         </div>
       </div>
