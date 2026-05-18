@@ -10,7 +10,7 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   return (
     <Link href={`/products/${product.id}`}>
-      <Card className="group overflow-hidden border-border hover:border-accent transition-colors h-full">
+      <Card className="group overflow-hidden border-border hover:border-accent/50 transition-all duration-300 hover:shadow-lg h-full">
         <div className="aspect-square overflow-hidden bg-muted">
           <Image
             src={product.images[0]}
@@ -22,7 +22,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
         <CardContent className="p-4">
           <p className="text-xs text-muted-foreground mb-1">{product.category.name}</p>
-          <h3 className="font-medium text-sm line-clamp-1 group-hover:text-accent transition-colors">
+          <h3 className="font-medium text-sm line-clamp-1 group-hover:text-accent-foreground transition-colors">
             {product.title}
           </h3>
           <p className="font-semibold mt-2">${product.price.toFixed(2)}</p>

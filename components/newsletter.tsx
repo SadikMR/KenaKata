@@ -17,7 +17,7 @@ export function Newsletter() {
   }
 
   return (
-    <section className="bg-primary text-primary-foreground py-12">
+    <section className="bg-[#85644f] text-primary-foreground py-12">
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center text-center gap-4 max-w-xl mx-auto">
           <h2 className="text-2xl font-bold">Stay in the loop</h2>
