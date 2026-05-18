@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { Search, ShoppingCart, User, Menu, X, Moon, Sun, Loader2 } from "lucide-react"
+import { Search, ShoppingCart, User, Menu, X, Moon, Sun } from "lucide-react"
 import { useState } from "react"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
@@ -24,7 +24,7 @@ export function Navbar() {
   }
 
   return (
-     <header className="sticky top-0 z-50 w-full border-b border-border bg-background backdrop-blur">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between gap-4">
           {/* Logo */}

@@ -1,6 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 import type { Product } from "@/lib/api"
 
 interface ProductCardProps {
@@ -29,5 +30,16 @@ export function ProductCard({ product }: ProductCardProps) {
         </CardContent>
       </Card>
     </Link>
+  )
+}
+
+export function ProductCardSkeleton() {
+  return (
+    <div className="space-y-3">
+      <Skeleton className="aspect-square w-full rounded-lg" />
+      <Skeleton className="h-3 w-16" />
+      <Skeleton className="h-4 w-3/4" />
+      <Skeleton className="h-4 w-20" />
+    </div>
   )
 }

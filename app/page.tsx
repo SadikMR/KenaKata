@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 // Navbar and Footer removed from homepage per user preference
 import { Newsletter } from "@/components/newsletter"
-import { ProductCard } from "@/components/product-card"
+import { ProductCard } from "@/components/products/product-card"
 
 // Decoupled architecture import entrypoint
 import { getProducts, getCategories } from "@/lib/api"
