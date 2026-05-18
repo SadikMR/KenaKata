@@ -22,7 +22,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
         <CardContent className="p-4">
           <p className="text-xs text-muted-foreground mb-1">{product.category.name}</p>
-          <h3 className="font-medium text-sm line-clamp-1 group-hover:text-accent-foreground transition-colors">
+          <h3 className="font-medium text-sm line-clamp-1 group-hover:text-foreground transition-colors">
             {product.title}
           </h3>
           <p className="font-semibold mt-2">${product.price.toFixed(2)}</p>
