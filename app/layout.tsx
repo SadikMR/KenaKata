@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { ThemeProvider } from '@/components/theme-provider'
+import { Navbar } from '@/components/navbar'
+import { Footer } from '@/components/footer'
 import './globals.css'
 
 const geistSans = Geist({
@@ -14,10 +16,21 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://kenakata.com'),
+
   title: 'KenaKata | Lifestyle & Fashion Store',
+
   description:
     'Curated lifestyle and fashion essentials for the modern individual. Shop premium clothing, electronics, furniture, and more.',
-  generator: 'v0.app',
+
+  openGraph: {
+    title: 'KenaKata | Lifestyle & Fashion Store',
+    description:
+      'Curated lifestyle and fashion essentials for the modern individual.',
+    siteName: 'KenaKata',
+    type: 'website',
+  },
+
   icons: {
     icon: [
       {
@@ -33,6 +46,7 @@ export const metadata: Metadata = {
         type: 'image/svg+xml',
       },
     ],
+
     apple: '/apple-icon.png',
   },
 }
@@ -43,6 +57,7 @@ export const viewport: Viewport = {
     { media: '(prefers-color-scheme: dark)', color: '#1a1816' },
   ],
   width: 'device-width',
+
   initialScale: 1,
 }
 
@@ -52,9 +67,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="bg-background" suppressHydrationWarning>
+    <html
+      lang="en"
+      className="bg-background"
+      suppressHydrationWarning
+    >
       <body
-        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen font-sans antialiased`}
       >
         <ThemeProvider
           attribute="class"
@@ -62,7 +81,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <div className="min-h-screen flex flex-col bg-background text-foreground">
+            <Navbar />
+            <main className="flex-1">
+              {children}
+            </main>
+            <Footer />
+          </div>
         </ThemeProvider>
       </body>
     </html>
