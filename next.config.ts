@@ -17,7 +17,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'placeimg.com',
+        hostname: 'opensource-demo.orangehrmlive.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
       },
     ],
 

@@ -163,7 +163,7 @@ function ProductListingContent() {
               <div className="sticky top-24 space-y-8">
                 <div>
                   <h2 className="font-semibold mb-4">Categories</h2>
-                  <div className="space-y-2">
+                  <div className="space-y-2 max-h-[260px] overflow-y-auto pr-1">
                     <button
                       onClick={() => handleCategoryChange("")}
                       className={`block w-full text-left px-3 py-2 text-sm rounded-md transition-colors ${
@@ -395,7 +395,7 @@ function ProductListingContent() {
             <div className="space-y-6">
               <div>
                 <h3 className="font-medium mb-3">Categories</h3>
-                <div className="space-y-2">
+                <div className="space-y-2 max-h-[260px] overflow-y-auto pr-1">
                   <button
                     onClick={() => {
                       handleCategoryChange("")
