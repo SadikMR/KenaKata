@@ -1,6 +1,7 @@
 "use client"
 
 import { CreditCard, Check, Loader2, ShieldCheck } from "lucide-react"
+import { useFormContext } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -8,9 +9,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Separator } from "@/components/ui/separator"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import {
   type CheckoutFormData,
-  type FormErrors,
-  type PaymentMethod,
   PAYMENT_METHODS,
   formatCardNumber,
   formatExpiry,
@@ -18,24 +24,16 @@ import {
 } from "./checkout-types"
 
 interface PaymentMethodSelectorProps {
-  paymentMethod: PaymentMethod
-  formData: CheckoutFormData
-  errors: FormErrors
   total: number
   isProcessing: boolean
-  onPaymentMethodChange: (method: PaymentMethod) => void
-  onInputChange: (field: keyof CheckoutFormData, value: string) => void
 }
 
 export function PaymentMethodSelector({
-  paymentMethod,
-  formData,
-  errors,
   total,
   isProcessing,
-  onPaymentMethodChange,
-  onInputChange,
 }: PaymentMethodSelectorProps) {
+  const { control, watch } = useFormContext<CheckoutFormData>()
+  const paymentMethod = watch("paymentMethod")
   const selectedPaymentMethod = PAYMENT_METHODS.find((m) => m.id === paymentMethod)
   const isMobileBanking = paymentMethod === "bkash" || paymentMethod === "nagad" || paymentMethod === "rocket"
 
@@ -49,86 +47,117 @@ export function PaymentMethodSelector({
         <CardDescription>Choose your preferred payment method</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <RadioGroup
-          value={paymentMethod}
-          onValueChange={(value) => onPaymentMethodChange(value as PaymentMethod)}
-          className="grid grid-cols-1 sm:grid-cols-2 gap-4"
-          disabled={isProcessing}
-        >
-          {PAYMENT_METHODS.map((method) => (
-            <Label
-              key={method.id}
-              htmlFor={method.id}
-              className={`flex items-center gap-4 p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                paymentMethod === method.id
-                  ? "border-accent bg-accent/5"
-                  : "border-border hover:border-accent/50"
-              }`}
-            >
-              <RadioGroupItem value={method.id} id={method.id} className="sr-only" />
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center"
-                style={{
-                  backgroundColor: method.color ? `${method.color}20` : "var(--secondary)",
-                  color: method.color || "var(--foreground)",
-                }}
-              >
-                <method.icon className="h-5 w-5" />
-              </div>
-              <div className="flex-1">
-                <p className="font-medium">{method.name}</p>
-                <p className="text-xs text-muted-foreground">{method.description}</p>
-              </div>
-              {paymentMethod === method.id && <Check className="h-5 w-5 text-accent" />}
-            </Label>
-          ))}
-        </RadioGroup>
+        <FormField
+          control={control}
+          name="paymentMethod"
+          render={({ field }) => (
+            <FormItem className="space-y-3">
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+                  disabled={isProcessing}
+                >
+                  {PAYMENT_METHODS.map((method) => (
+                    <FormItem key={method.id} className="flex items-center space-x-3 space-y-0">
+                      <FormLabel
+                        className={`flex items-center gap-4 p-4 rounded-lg border-2 cursor-pointer w-full transition-all ${
+                          field.value === method.id
+                            ? "border-accent bg-accent/5"
+                            : "border-border hover:border-accent/50"
+                        }`}
+                      >
+                        <FormControl>
+                          <RadioGroupItem value={method.id} className="sr-only" />
+                        </FormControl>
+                        <div
+                          className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                          style={{
+                            backgroundColor: method.color ? `${method.color}20` : "var(--secondary)",
+                            color: method.color || "var(--foreground)",
+                          }}
+                        >
+                          <method.icon className="h-5 w-5" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium">{method.name}</p>
+                          <p className="text-xs text-muted-foreground">{method.description}</p>
+                        </div>
+                        {field.value === method.id && <Check className="h-5 w-5 text-accent shrink-0" />}
+                      </FormLabel>
+                    </FormItem>
+                  ))}
+                </RadioGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <Separator />
 
         {/* Card Payment Fields */}
         {paymentMethod === "card" && (
           <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="cardNumber">Card Number</Label>
-              <Input
-                id="cardNumber"
-                placeholder="1234 5678 9012 3456"
-                value={formData.cardNumber}
-                onChange={(e) => onInputChange("cardNumber", formatCardNumber(e.target.value))}
-                className={errors.cardNumber ? "border-destructive" : ""}
-                disabled={isProcessing}
-              />
-              {errors.cardNumber && <p className="text-sm text-destructive">{errors.cardNumber}</p>}
-            </div>
+            <FormField
+              control={control}
+              name="cardNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Card Number</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="1234 5678 9012 3456"
+                      disabled={isProcessing}
+                      {...field}
+                      onChange={(e) => field.onChange(formatCardNumber(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="expiry">Expiry Date</Label>
-                <Input
-                  id="expiry"
-                  placeholder="MM/YY"
-                  value={formData.expiry}
-                  onChange={(e) => onInputChange("expiry", formatExpiry(e.target.value))}
-                  className={errors.expiry ? "border-destructive" : ""}
-                  disabled={isProcessing}
-                />
-                {errors.expiry && <p className="text-sm text-destructive">{errors.expiry}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="cvv">CVV</Label>
-                <Input
-                  id="cvv"
-                  placeholder="123"
-                  maxLength={4}
-                  value={formData.cvv}
-                  onChange={(e) =>
-                    onInputChange("cvv", e.target.value.replace(/\D/g, "").slice(0, 4))
-                  }
-                  className={errors.cvv ? "border-destructive" : ""}
-                  disabled={isProcessing}
-                />
-                {errors.cvv && <p className="text-sm text-destructive">{errors.cvv}</p>}
-              </div>
+              <FormField
+                control={control}
+                name="expiry"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Expiry Date</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="MM/YY"
+                        disabled={isProcessing}
+                        {...field}
+                        onChange={(e) => field.onChange(formatExpiry(e.target.value))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="cvv"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>CVV</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="123"
+                        maxLength={4}
+                        disabled={isProcessing}
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(e.target.value.replace(/\D/g, "").slice(0, 4))
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
             <div className="rounded-lg bg-secondary/50 p-3 text-sm">
               <p className="font-medium text-foreground">Test Card</p>
@@ -172,39 +201,47 @@ export function PaymentMethodSelector({
               </ol>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="mobileNumber">Your {selectedPaymentMethod?.name} Number</Label>
-              <Input
-                id="mobileNumber"
-                placeholder="01XXXXXXXXX"
-                value={formData.mobileNumber}
-                onChange={(e) => onInputChange("mobileNumber", formatMobileNumber(e.target.value))}
-                className={errors.mobileNumber ? "border-destructive" : ""}
-                disabled={isProcessing}
-              />
-              {errors.mobileNumber && (
-                <p className="text-sm text-destructive">{errors.mobileNumber}</p>
+            <FormField
+              control={control}
+              name="mobileNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Your {selectedPaymentMethod?.name} Number</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="01XXXXXXXXX"
+                      disabled={isProcessing}
+                      {...field}
+                      onChange={(e) => field.onChange(formatMobileNumber(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-            </div>
+            />
 
-            <div className="space-y-2">
-              <Label htmlFor="transactionId">Transaction ID (TrxID)</Label>
-              <Input
-                id="transactionId"
-                placeholder="e.g., 8N7A5B3C1D"
-                value={formData.transactionId}
-                onChange={(e) => onInputChange("transactionId", e.target.value.toUpperCase())}
-                className={errors.transactionId ? "border-destructive" : ""}
-                disabled={isProcessing}
-              />
-              {errors.transactionId && (
-                <p className="text-sm text-destructive">{errors.transactionId}</p>
+            <FormField
+              control={control}
+              name="transactionId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Transaction ID (TrxID)</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="e.g., 8N7A5B3C1D"
+                      disabled={isProcessing}
+                      {...field}
+                      onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                  <p className="text-xs text-muted-foreground">
+                    You&apos;ll receive the Transaction ID after completing the payment in your{" "}
+                    {selectedPaymentMethod?.name} app
+                  </p>
+                </FormItem>
               )}
-              <p className="text-xs text-muted-foreground">
-                You&apos;ll receive the Transaction ID after completing the payment in your{" "}
-                {selectedPaymentMethod?.name} app
-              </p>
-            </div>
+            />
 
             <div className="rounded-lg bg-secondary/50 p-3 text-sm">
               <p className="font-medium text-foreground">Test Transaction</p>

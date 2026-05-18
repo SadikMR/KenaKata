@@ -3,29 +3,52 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { AlertCircle } from "lucide-react"
+import { AlertCircle, Eye, EyeOff } from "lucide-react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Separator } from "@/components/ui/separator"
+import { Input } from "@/components/ui/input"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 import { useAuth } from "@/lib/auth-context"
-import { FormField } from "./form-field"
+
+const loginSchema = z.object({
+  email: z.string().min(1, "Email is required").email("Invalid email address"),
+  password: z.string().min(1, "Password is required"),
+})
 
 export function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirectTo = searchParams.get("redirect") || "/"
   const { login } = useAuth()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  })
+
+  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     setError("")
     setIsLoading(true)
 
-    const success = await login(email, password)
+    const success = await login(values.email, values.password)
 
     if (success) {
       router.push(redirectTo)
@@ -37,42 +60,73 @@ export function LoginForm() {
   }
 
   const fillDemoCredentials = () => {
-    setEmail("john@mail.com")
-    setPassword("changeme")
+    form.setValue("email", "john@mail.com")
+    form.setValue("password", "changeme")
   }
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {error && (
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
 
-        <FormField
-          id="login-email"
-          label="Email"
-          type="email"
-          placeholder="you@example.com"
-          value={email}
-          onChange={setEmail}
-        />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input type="email" placeholder="you@example.com" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          id="login-password"
-          label="Password"
-          placeholder="Enter your password"
-          value={password}
-          onChange={setPassword}
-          isPassword
-        />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter your password"
+                      {...field}
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4 text-muted-foreground" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-muted-foreground" />
+                      )}
+                    </Button>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? "Signing in..." : "Sign In"}
-        </Button>
-      </form>
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? "Signing in..." : "Sign In"}
+          </Button>
+        </form>
+      </Form>
 
       <div className="relative my-6">
         <Separator />

@@ -2,20 +2,22 @@
 
 import { useState, useEffect, useMemo } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Form } from "@/components/ui/form"
 import { useCart } from "@/lib/cart-context"
 import { ShippingForm } from "./shipping-form"
 import { PaymentMethodSelector } from "./payment-method-selector"
 import { PaymentOverlay } from "./payment-overlay"
 import { OrderSummary } from "./order-summary"
 import {
+  checkoutSchema,
   type CheckoutFormData,
-  type FormErrors,
   type PaymentMethod,
   type PaymentStep,
   INITIAL_FORM_DATA,
   PAYMENT_STEPS_CARD,
   PAYMENT_STEPS_MOBILE,
-  validateCheckoutForm,
 } from "./checkout-types"
 
 export function CheckoutContent() {
@@ -35,12 +37,17 @@ export function CheckoutContent() {
     return items.filter((item) => selectedItemIds.has(item.product.id))
   }, [items, selectedItemIds])
 
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card")
   const [paymentStep, setPaymentStep] = useState<PaymentStep>("idle")
   const [paymentProgress, setPaymentProgress] = useState(0)
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
-  const [formData, setFormData] = useState<CheckoutFormData>(INITIAL_FORM_DATA)
-  const [errors, setErrors] = useState<FormErrors>({})
+
+  const form = useForm<CheckoutFormData>({
+    resolver: zodResolver(checkoutSchema),
+    defaultValues: INITIAL_FORM_DATA,
+  })
+
+  // Watch payment method to conditionally render fields and handle dynamic total logic if needed
+  const paymentMethod = form.watch("paymentMethod")
 
   const subtotal = checkoutItems.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
@@ -88,21 +95,8 @@ export function CheckoutContent() {
     router.push(`/order-confirmation?order=${orderNumber}&payment=${paymentMethod}`)
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    const newErrors = validateCheckoutForm(formData, paymentMethod)
-    setErrors(newErrors)
-    if (Object.keys(newErrors).length > 0) return
-
+  const onSubmit = async (data: CheckoutFormData) => {
     await runPaymentFlow()
-  }
-
-  const handleInputChange = (field: keyof CheckoutFormData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }))
-    }
   }
 
   useEffect(() => {
@@ -131,38 +125,27 @@ export function CheckoutContent() {
         />
       )}
 
-      <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Form Section */}
-          <div className="lg:col-span-2 space-y-8">
-            <ShippingForm
-              formData={formData}
-              errors={errors}
-              disabled={isProcessing}
-              onInputChange={handleInputChange}
-            />
-            <PaymentMethodSelector
-              paymentMethod={paymentMethod}
-              formData={formData}
-              errors={errors}
-              total={total}
-              isProcessing={isProcessing}
-              onPaymentMethodChange={setPaymentMethod}
-              onInputChange={handleInputChange}
-            />
-          </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Form Section */}
+            <div className="lg:col-span-2 space-y-8">
+              <ShippingForm disabled={isProcessing} />
+              <PaymentMethodSelector total={total} isProcessing={isProcessing} />
+            </div>
 
-          {/* Order Summary Sidebar */}
-          <div className="lg:col-span-1">
-            <OrderSummary
-              checkoutItems={checkoutItems}
-              subtotal={subtotal}
-              total={total}
-              paymentMethod={paymentMethod}
-            />
+            {/* Order Summary Sidebar */}
+            <div className="lg:col-span-1">
+              <OrderSummary
+                checkoutItems={checkoutItems}
+                subtotal={subtotal}
+                total={total}
+                paymentMethod={paymentMethod}
+              />
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </Form>
     </div>
   )
 }
