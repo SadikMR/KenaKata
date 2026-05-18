@@ -22,10 +22,10 @@ export default async function HomePage() {
   const products = allProducts.slice(0, 8)
 
   return (
-  <div className="min-h-screen flex flex-col bg-[#f5f3ef]">
+  <div className="min-h-screen flex flex-col bg-background]">
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative overflow-hidden h-[250px] md:h-[360px] lg:h-[66vh] bg-[#f4f2ed]">
+        <section className="relative overflow-hidden h-[250px] md:h-[360px] lg:h-[66vh] bg-secondary">
 
           <div className="container mx-auto px-4 h-full">
             <div className="h-full flex flex-col lg:flex-row items-center lg:items-stretch">
@@ -33,24 +33,24 @@ export default async function HomePage() {
               {/* Left Column: Text & Actions */}
               <div className="lg:w-1/2 w-full flex items-center justify-center lg:justify-start">
                 <div className="text-center lg:text-left max-w-2xl mx-auto lg:mx-0">
-                <span className="text-xs font-semibold tracking-widest text-[#8c6239] uppercase bg-[#e8e4dc] px-3 py-1 rounded-full">
+                <span className="text-xs font-semibold tracking-widest text-accent uppercase bg-muted px-3 py-1 rounded-full">
                   Welcome to KenaKata
                 </span>
-                <h1 className="mt-4 text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-stone-900 text-balance leading-[1.1]">
+                <h1 className="mt-4 text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground text-balance leading-[1.1]">
                   Curated essentials for modern living
                 </h1>
-                <p className="mt-6 text-base md:text-lg text-stone-600 max-w-xl mx-auto lg:mx-0 text-pretty">
+                <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 text-pretty">
                   Discover our premium collection of contemporary lifestyle products and timeless essentials, thoughtfully sourced for quality and design.
                 </p>
                 <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <Link href="/products" className="w-full sm:w-auto">
-                    <Button size="lg" className="w-full bg-[#2d2a26] hover:bg-[#403c37] text-white">
+                    <Button size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
                       Shop Now
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   </Link>
                   <Link href="/products?category=clothes" className="w-full sm:w-auto">
-                    <Button size="lg" variant="outline" className="w-full border-stone-300 text-stone-800 hover:bg-stone-100">
+                    <Button size="lg" variant="outline" className="w-full">
                       New Collection
                     </Button>
                   </Link>
@@ -120,10 +120,10 @@ export default async function HomePage() {
         </section>
 
         {/* Shop By Category Slider Grid */}
-        <section className="py-20 md:py-28 bg-secondary/50">
+        <section className="py-20 md:py-28">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <span className="text-sm font-medium text-accent uppercase tracking-wider">Browse</span>
+              <span className="text-sm font-medium uppercase tracking-wider">Browse</span>
               <h2 className="text-3xl md:text-4xl font-bold mt-2">Shop by Category</h2>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
