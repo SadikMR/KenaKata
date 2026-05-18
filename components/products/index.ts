@@ -27,4 +27,6 @@ export {
   ProductInfoSkeleton,
   ProductGallery,
   ProductGallerySkeleton,
+  RelatedProducts,
+  RelatedProductsSkeleton,
 } from "./detail"

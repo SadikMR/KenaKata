@@ -1,5 +1,9 @@
 import { Skeleton } from "@/components/ui/skeleton"
-import { ProductInfoSkeleton, ProductGallerySkeleton } from "@/components/products"
+import {
+  ProductInfoSkeleton,
+  ProductGallerySkeleton,
+  RelatedProductsSkeleton,
+} from "@/components/products"
 
 export default function ProductDetailLoading() {
   return (
@@ -10,12 +14,15 @@ export default function ProductDetailLoading() {
           <Skeleton className="h-6 w-16 mb-6" />
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-            {/* Gallery skeleton */}
             <ProductGallerySkeleton />
-
-            {/* Product info skeleton */}
             <ProductInfoSkeleton />
           </div>
+
+          {/* Related products skeleton */}
+          <section className="mt-16">
+            <Skeleton className="h-8 w-48 mb-6" />
+            <RelatedProductsSkeleton />
+          </section>
         </div>
       </main>
     </div>
