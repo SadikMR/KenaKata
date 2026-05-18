@@ -1,7 +1,13 @@
 import { Suspense } from "react"
 import Link from "next/link"
+import { Metadata } from "next"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { LoginForm } from "@/components/auth"
+
+export const metadata: Metadata = {
+  title: "Login",
+  description: "Sign in to your KenaKata account.",
+}
 
 export default function LoginPage() {
   return (

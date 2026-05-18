@@ -21,7 +21,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL('https://kenakata.com'),
 
-  title: 'KenaKata | Lifestyle & Fashion Store',
+  title: {
+    template: '%s | KenaKata',
+    default: 'KenaKata | Lifestyle & Fashion Store',
+  },
 
   description:
     'Curated lifestyle and fashion essentials for the modern individual. Shop premium clothing, electronics, furniture, and more.',

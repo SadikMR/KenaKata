@@ -1,6 +1,12 @@
 import Link from "next/link"
+import { Metadata } from "next"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { RegisterForm } from "@/components/auth"
+
+export const metadata: Metadata = {
+  title: "Register",
+  description: "Create a new KenaKata account.",
+}
 
 export default function RegisterPage() {
   return (
