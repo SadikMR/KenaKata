@@ -2,6 +2,7 @@
 export { ProductCard, ProductCardSkeleton } from "./product-card"
 export { ProductList, ProductListSkeleton } from "./product-list"
 export { ProductSearchBar, ProductSearchBarSkeleton } from "./product-search-bar"
+export { NavbarSearch } from "./navbar-search"
 
 // Filter components (re-exported from filters/ subfolder)
 export {

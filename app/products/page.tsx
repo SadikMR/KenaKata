@@ -14,6 +14,7 @@ import {
   ProductListSkeleton,
 } from "@/components/products"
 import { getProducts, getCategories, type Product, type Category } from "@/lib/api"
+import { useDebounce } from "@/lib/hooks"
 
 const ITEMS_PER_PAGE = 12
 
@@ -27,6 +28,7 @@ function ProductListingContent() {
   const initialPage = parseInt(searchParams.get("page") || "1")
   
   const [searchQuery, setSearchQuery] = useState(initialSearch)
+  const debouncedSearchQuery = useDebounce(searchQuery, 500)
   const [selectedCategory, setSelectedCategory] = useState(initialCategory)
   const [sortBy, setSortBy] = useState("newest")
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -67,8 +69,8 @@ function ProductListingContent() {
         limit: ITEMS_PER_PAGE,
       }
       
-      if (searchQuery) {
-        filters.title = searchQuery
+      if (debouncedSearchQuery) {
+        filters.title = debouncedSearchQuery
       }
       
       if (selectedCategory) {
@@ -110,7 +112,7 @@ function ProductListingContent() {
     } finally {
       setIsLoading(false)
     }
-  }, [currentPage, searchQuery, selectedCategory, priceRange, sortBy])
+  }, [currentPage, debouncedSearchQuery, selectedCategory, priceRange, sortBy])
 
   useEffect(() => {
     fetchProducts()
@@ -120,12 +122,12 @@ function ProductListingContent() {
   useEffect(() => {
     const params = new URLSearchParams()
     if (selectedCategory) params.set("category", selectedCategory)
-    if (searchQuery) params.set("search", searchQuery)
+    if (debouncedSearchQuery) params.set("search", debouncedSearchQuery)
     if (currentPage > 1) params.set("page", currentPage.toString())
     
     const newUrl = params.toString() ? `?${params.toString()}` : "/products"
     router.replace(newUrl, { scroll: false })
-  }, [selectedCategory, searchQuery, currentPage, router])
+  }, [selectedCategory, debouncedSearchQuery, currentPage, router])
 
   const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE)
 
