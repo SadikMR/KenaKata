@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { QuantitySelector } from "./quantity-selector"
 import { useCart } from "@/lib/cart-context"
+import { useWishlist } from "@/lib/wishlist-context"
 import { useAuth } from "@/lib/auth-context"
 import type { Product } from "@/lib/api"
 
@@ -17,12 +18,14 @@ interface ProductInfoProps {
 
 export function ProductInfo({ product }: ProductInfoProps) {
   const [quantity, setQuantity] = useState(1)
-  const [isWishlisted, setIsWishlisted] = useState(false)
   const [addedToCart, setAddedToCart] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
   const { addItem } = useCart()
+  const { isWishlisted, toggleWishlist } = useWishlist()
   const { user } = useAuth()
+
+  const isFavorited = isWishlisted(product.id)
 
   const handleAddToCart = () => {
     // Check if user is logged in
@@ -44,6 +47,10 @@ export function ProductInfo({ product }: ProductInfoProps) {
     } else {
       setError("Failed to add item to cart")
     }
+  }
+
+  const handleToggleWishlist = () => {
+    toggleWishlist(product.id)
   }
 
   return (
@@ -100,13 +107,13 @@ export function ProductInfo({ product }: ProductInfoProps) {
           variant="outline"
           size="lg"
           className="w-full"
-          onClick={() => setIsWishlisted(!isWishlisted)}
+          onClick={handleToggleWishlist}
         >
           <Heart
-            className={`mr-2 h-5 w-5 ${isWishlisted ? "fill-accent text-accent" : ""
+            className={`mr-2 h-5 w-5 transition-all ${isFavorited ? "fill-red-500 text-red-500" : ""
               }`}
           />
-          {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+          {isFavorited ? "Remove from Wishlist" : "Add to Wishlist"}
         </Button>
       </div>
     </div>
