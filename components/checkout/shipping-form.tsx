@@ -85,7 +85,16 @@ export function ShippingForm({ disabled }: ShippingFormProps) {
               <FormItem>
                 <FormLabel>Phone Number</FormLabel>
                 <FormControl>
-                  <Input type="tel" placeholder="01XXXXXXXXX" disabled={disabled} {...field} />
+                  <Input
+                    type="tel"
+                    placeholder="01XXXXXXXXX"
+                    disabled={disabled}
+                    {...field}
+                    onChange={(e) => {
+                      e.target.value = e.target.value.replace(/\D/g, "").slice(0, 11)
+                      field.onChange(e)
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

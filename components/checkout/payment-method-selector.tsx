@@ -212,7 +212,10 @@ export function PaymentMethodSelector({
                       placeholder="01XXXXXXXXX"
                       disabled={isProcessing}
                       {...field}
-                      onChange={(e) => field.onChange(formatMobileNumber(e.target.value))}
+                      onChange={(e) => {
+                        e.target.value = formatMobileNumber(e.target.value)
+                        field.onChange(e)
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -231,7 +234,10 @@ export function PaymentMethodSelector({
                       placeholder="e.g., 8N7A5B3C1D"
                       disabled={isProcessing}
                       {...field}
-                      onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                      onChange={(e) => {
+                        e.target.value = e.target.value.toUpperCase()
+                        field.onChange(e)
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
