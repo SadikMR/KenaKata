@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useAuth } from "@/lib/auth-context"
+import { useCart } from "@/lib/cart-context"
 
 export function Navbar() {
   const router = useRouter()
@@ -23,6 +24,7 @@ export function Navbar() {
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
   const { user, logout } = useAuth()
+  const { totalItems } = useCart()
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -72,6 +74,11 @@ export function Navbar() {
             <Link href="/cart">
               <Button variant="ghost" size="icon" className="relative">
                 <ShoppingCart className="h-5 w-5" />
+                {totalItems > 0 && (
+                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-xs text-accent-foreground">
+                    {totalItems}
+                  </span>
+                )}
               </Button>
             </Link>
 
@@ -132,29 +139,31 @@ export function Navbar() {
             <nav className="flex flex-col gap-2">
               <Link
                 href="/products"
-                className={`px-3 py-2 text-sm font-medium rounded-md ${
-                  pathname === "/products" ? "bg-secondary" : "hover:bg-secondary"
-                }`}
+                className={`px-3 py-2 text-sm font-medium rounded-md ${pathname === "/products" ? "bg-secondary" : "hover:bg-secondary"
+                  }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 Products
               </Link>
               <Link
                 href="/cart"
-                className={`flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md ${
-                  pathname === "/cart" ? "bg-secondary" : "hover:bg-secondary"
-                }`}
+                className={`flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md ${pathname === "/cart" ? "bg-secondary" : "hover:bg-secondary"
+                  }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 <span>Cart</span>
+                {totalItems > 0 && (
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-xs text-accent-foreground">
+                    {totalItems}
+                  </span>
+                )}
               </Link>
               {user ? (
                 <>
                   <Link
                     href="/profile"
-                    className={`px-3 py-2 text-sm font-medium rounded-md ${
-                      pathname === "/profile" ? "bg-secondary" : "hover:bg-secondary"
-                    }`}
+                    className={`px-3 py-2 text-sm font-medium rounded-md ${pathname === "/profile" ? "bg-secondary" : "hover:bg-secondary"
+                      }`}
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Profile
@@ -172,9 +181,8 @@ export function Navbar() {
               ) : (
                 <Link
                   href="/login"
-                  className={`px-3 py-2 text-sm font-medium rounded-md ${
-                    pathname === "/login" ? "bg-secondary" : "hover:bg-secondary"
-                  }`}
+                  className={`px-3 py-2 text-sm font-medium rounded-md ${pathname === "/login" ? "bg-secondary" : "hover:bg-secondary"
+                    }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Login

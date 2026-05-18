@@ -1,11 +1,15 @@
 "use client"
 
 import { useState } from "react"
-import { Heart, ShoppingCart } from "lucide-react"
+import { Heart, ShoppingCart, AlertCircle } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { QuantitySelector } from "./quantity-selector"
+import { useCart } from "@/lib/cart-context"
+import { useWishlist } from "@/lib/wishlist-context"
+import { useAuth } from "@/lib/auth-context"
 import type { Product } from "@/lib/api"
 
 interface ProductInfoProps {
@@ -14,13 +18,39 @@ interface ProductInfoProps {
 
 export function ProductInfo({ product }: ProductInfoProps) {
   const [quantity, setQuantity] = useState(1)
-  const [isWishlisted, setIsWishlisted] = useState(false)
   const [addedToCart, setAddedToCart] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
+  const { addItem } = useCart()
+  const { isWishlisted, toggleWishlist } = useWishlist()
+  const { user } = useAuth()
+
+  const isFavorited = isWishlisted(product.id)
 
   const handleAddToCart = () => {
-    // TODO: Wire up cart context when available
-    setAddedToCart(true)
-    setTimeout(() => setAddedToCart(false), 2000)
+    // Check if user is logged in
+    if (!user) {
+      setError("You must be logged in to add items to cart")
+      setTimeout(() => {
+        router.push("/login")
+      }, 1500)
+      return
+    }
+
+    // Try to add item to cart
+    const success = addItem(product, quantity)
+
+    if (success) {
+      setAddedToCart(true)
+      setError(null)
+      setTimeout(() => setAddedToCart(false), 2000)
+    } else {
+      setError("Failed to add item to cart")
+    }
+  }
+
+  const handleToggleWishlist = () => {
+    toggleWishlist(product.id)
   }
 
   return (
@@ -48,6 +78,14 @@ export function ProductInfo({ product }: ProductInfoProps) {
         onDecrement={() => setQuantity((q) => Math.max(1, q - 1))}
       />
 
+      {/* Error Message */}
+      {error && (
+        <div className="flex items-center gap-2 p-3 bg-destructive/10 text-destructive rounded-md">
+          <AlertCircle className="h-4 w-4" />
+          <span className="text-sm">{error}</span>
+        </div>
+      )}
+
       {/* Actions */}
       <div className="space-y-3">
         <Button
@@ -69,14 +107,13 @@ export function ProductInfo({ product }: ProductInfoProps) {
           variant="outline"
           size="lg"
           className="w-full"
-          onClick={() => setIsWishlisted(!isWishlisted)}
+          onClick={handleToggleWishlist}
         >
           <Heart
-            className={`mr-2 h-5 w-5 ${
-              isWishlisted ? "fill-accent text-accent" : ""
-            }`}
+            className={`mr-2 h-5 w-5 transition-all ${isFavorited ? "fill-red-500 text-red-500" : ""
+              }`}
           />
-          {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+          {isFavorited ? "Remove from Wishlist" : "Add to Wishlist"}
         </Button>
       </div>
     </div>
