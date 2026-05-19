@@ -33,15 +33,14 @@ export function Navbar() {
         <div className="flex h-16 items-center justify-between gap-4">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <Image 
-              src="/Logo.png" 
-              alt="KenaKata Logo Icon" 
-              width={160} 
-              height={40} 
-              // Added "mix-blend-multiply" to hide a white background 
-              // (Works best if the header background is light/white)
-              className="h-8 w-auto md:h-10 mix-blend-multiply" 
-              priority 
+            <Image
+              src="/Logo.png"
+              alt="KenaKata Logo Icon"
+              width={30}
+              height={30}
+              style={{ width: "auto", height: "auto" }}
+              className="h-8 md:h-10 mix-blend-multiply"
+              priority
             />
             <span className="text-xl font-bold tracking-tight md:text-2xl">
               KenaKata
