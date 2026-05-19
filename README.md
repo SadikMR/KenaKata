@@ -12,9 +12,9 @@
 | :---: | :---: |
 | <img src="public/images/screenshots/homepage-1.png" alt="Homepage Hero Light" /> | <img src="public/images/screenshots/homepage-dark.png" alt="Homepage Hero Dark" /> |
 | **Homepage (New Arrivals)** | **Homepage (Categories)** |
-| <img src="public/images/screenshots/homepage-2.jpg" alt="Homepage New Arrivals" /> | <img src="public/images/screenshots/homepage-3.jpg" alt="Homepage Categories" /> |
+| <img src="public/images/screenshots/homepage-2.png" alt="Homepage New Arrivals" /> | <img src="public/images/screenshots/homepage-3.png" alt="Homepage Categories" /> |
 | **Catalog & Filters** | **Product Details** |
-| <img src="public/images/screenshots/all-products.jpg" alt="All Products" /> | <img src="public/images/screenshots/product-details.jpg" alt="Product Details" /> |
+| <img src="public/images/screenshots/all-products.png" alt="All Products" /> | <img src="public/images/screenshots/product-details.png" alt="Product Details" /> |
 | **Shopping Cart** | **Checkout Flow** |
 | <img src="public/images/screenshots/cart.png" alt="Shopping Cart" /> | <img src="public/images/screenshots/checkout.png" alt="Checkout" /> |
 | **Payment Processing** | **Order Confirmation** |
