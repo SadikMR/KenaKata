@@ -17,6 +17,7 @@ import {
 import { useAuth } from "@/lib/auth-context"
 import { useCart } from "@/lib/cart-context"
 import { NavbarSearch } from "@/components/products/navbar-search"
+import Image from "next/image";
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -32,7 +33,19 @@ export function Navbar() {
         <div className="flex h-16 items-center justify-between gap-4">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <span className="text-xl font-bold tracking-tight">KenaKata</span>
+            <Image 
+              src="/Logo.png" 
+              alt="KenaKata Logo Icon" 
+              width={160} 
+              height={40} 
+              // Added "mix-blend-multiply" to hide a white background 
+              // (Works best if the header background is light/white)
+              className="h-8 w-auto md:h-10 mix-blend-multiply" 
+              priority 
+            />
+            <span className="text-xl font-bold tracking-tight md:text-2xl">
+              KenaKata
+            </span>
           </Link>
 
           {/* Desktop Search */}
