@@ -8,7 +8,7 @@ const protectedPaths = [
   "/cart",
 ]
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const { pathname, search } = req.nextUrl
 
   const isProtected = protectedPaths.some(

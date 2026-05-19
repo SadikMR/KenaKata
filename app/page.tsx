@@ -61,7 +61,7 @@ export default async function HomePage() {
               {/* Right: small visual grid for larger screens */}
               <div className="hidden lg:flex lg:w-1/2 items-center justify-center">
                 <div className="grid grid-cols-2 gap-4 w-full max-w-lg">
-                  {categories.slice(0, 4).map((category) => (
+                  {categories.slice(0, 4).map((category, index) => (
                     <Link
                       key={category.id}
                       href={`/products?category=${category.id}`}
@@ -71,6 +71,7 @@ export default async function HomePage() {
                         src={category.image}
                         alt={category.name}
                         fill
+                        loading="eager"
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                         sizes="(max-width: 1024px) 40vw, 20vw"
                         quality={70}
