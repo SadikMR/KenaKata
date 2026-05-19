@@ -57,7 +57,7 @@ export function ProductCard({ product }: ProductCardProps) {
             alt={product.title}
             width={400}
             height={400}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="h-full w-full pl-4 pr-4 object-cover transition-transform duration-300 group-hover:scale-105"
           />
           {/* Wishlist Heart Button */}
           <Button

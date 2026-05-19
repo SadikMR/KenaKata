@@ -137,7 +137,7 @@ export default async function HomePage() {
                         alt={category.name}
                         width={200}
                         height={200}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        className="h-full w-full pl-4 pr-4 object-cover transition-transform duration-500 group-hover:scale-110"
                       />
                     </div>
                     <CardContent className="p-4 text-center">
