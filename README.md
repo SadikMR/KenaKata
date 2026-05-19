@@ -2,6 +2,8 @@
 
 **KenaKata** is a lifestyle and fashion e-commerce storefront built with Next.js. It covers the full shopping journey—browse, filter, authenticate, cart, wishlist, and checkout—with a UI tuned for clarity and performance. The frontend connects to an external REST API; checkout and payments are simulated for demonstration.
 
+**Live demo:** https://e-kenakata.vercel.app/
+
 ---
 
 ## Getting Started
@@ -172,6 +174,8 @@ Checkout uses one **`react-hook-form`** instance with a **Zod schema** (`checkou
 ### Protected routes
 
 `ProtectedRoute` checks `useAuth()`: while loading, show skeletons; when unauthenticated, redirect to `/login`. Used for cart, checkout, and profile content.
+
+Server-side route guarding is implemented in the Next.js `proxy.ts` file (the modern replacement for `middleware.ts`) to keep protected pages behind a cookie-based auth check before rendering.
 
 ---
 
