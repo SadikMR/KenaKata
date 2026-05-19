@@ -6,6 +6,22 @@
 
 ---
 
+## Screenshots
+
+| Homepage (Hero Light) | Homepage (Hero Dark) |
+| :---: | :---: |
+| <img src="public/images/screenshots/homepage-1.png" alt="Homepage Hero Light" /> | <img src="public/images/screenshots/homepage-dark.png" alt="Homepage Hero Dark" /> |
+| **Homepage (New Arrivals)** | **Homepage (Categories)** |
+| <img src="public/images/screenshots/homepage-2.jpg" alt="Homepage New Arrivals" /> | <img src="public/images/screenshots/homepage-3.jpg" alt="Homepage Categories" /> |
+| **Catalog & Filters** | **Product Details** |
+| <img src="public/images/screenshots/all-products.jpg" alt="All Products" /> | <img src="public/images/screenshots/product-details.jpg" alt="Product Details" /> |
+| **Shopping Cart** | **Checkout Flow** |
+| <img src="public/images/screenshots/cart.png" alt="Shopping Cart" /> | <img src="public/images/screenshots/checkout.png" alt="Checkout" /> |
+| **Payment Processing** | **Order Confirmation** |
+| <img src="public/images/screenshots/order-processing.png" alt="Order Processing" /> | <img src="public/images/screenshots/order-confirmation.png" alt="Order Confirmation" /> |
+
+---
+
 ## Getting Started
 
 | Requirement | Detail |
@@ -391,6 +407,7 @@ Prioritized directions if this storefront moves toward production:
 | Lower | Error boundaries and API error UI | Replace `console.error` with user-facing retry states |
 
 ---
+
 
 ## License
 
