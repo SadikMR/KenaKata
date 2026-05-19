@@ -24,29 +24,59 @@
 
 ## Getting Started
 
-| Requirement | Detail |
-| --- | --- |
-| Runtime | Node.js 20+ |
-| API | Backend reachable at `NEXT_PUBLIC_API_BASE_URL` |
+Follow these steps to set up the KenaKata storefront on your local machine.
 
+### Prerequisites
+Ensure your development environment meets the following requirements before you begin:
+* **Node.js:** Version 20.0 or higher.
+* **API:** Access to the backend REST API (defaults to the Escuelajs public testing API).
+
+### Step 1: Clone the repository
+First, clone the project to your local machine and navigate into the directory:
+```bash
+git clone https://github.com/SadikMR/KenaKata.git
+cd KenaKata
+```
+
+### Step 2: Install dependencies
+Install the required packages using npm:
 ```bash
 npm install
 ```
 
-Create `.env.local`:
+### Step 3: Set up environment variables
+The application requires a public API URL to fetch catalog and authentication data. 
 
+1. Create a new file named `.env.local` in the root directory of the project.
+2. Add the following line to the file:
 ```env
-# Public API
+# Public API Base URL
 NEXT_PUBLIC_API_BASE_URL=https://api.escuelajs.co/api/v1
 ```
 
+### Step 4: Run the development server
+Start the local development server:
 ```bash
-npm run dev     # Development → http://localhost:3000
-npm run build   # Production build
-npm start       # Production server
+npm run dev
+```
+Once the server is running, open your browser and navigate to **http://localhost:3000** to view the application.
+
+---
+
+### Additional Commands
+
+**Production Build**
+If you need to test the optimized production build locally, run:
+```bash
+npm run build   # Creates the optimized build
+npm start       # Starts the production server on localhost:3000
 ```
 
-**Scripts:** `npm run lint` — ESLint across the project.
+**Code Quality**
+To run the ESLint checker across the project and ensure code quality:
+```bash
+npm run lint
+```
 
 ---
 
