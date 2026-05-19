@@ -2,7 +2,7 @@ import { Product } from "./types"
 
 
 /// Retrieve the base URL strictly from environment variables
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.escuelajs.co/api/v1";
 
 if (!BASE_URL) {
   throw new Error(
